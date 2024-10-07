@@ -1,8 +1,8 @@
-﻿using System;
+﻿using System.Windows.Forms;
 
 namespace EmployeeDatabase
 {
-	partial class Form1
+	partial class Form1 : Form
 	{
 		/// <summary>
 		/// Required designer variable.
