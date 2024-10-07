@@ -3,17 +3,17 @@ using System.Reflection;
 
 class Employee
 {
-	string firstName, lastName, fatherName;
+	string firstName, lastName, surName;
 	DateTime birthDate;
 	string address;
 	string department;
 	string about;
 
-	public Employee(string firstName = "", string lastName = "", string fatherName = "", DateTime birthDate = default, string address = "", string department = "", string about = "")
+	public Employee(string firstName = "", string lastName = "", string surName = "", DateTime birthDate = default, string address = "", string department = "", string about = "")
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.fatherName = fatherName;
+		this.surName = surName;
 		this.birthDate = birthDate;
 		this.address = address;
 		this.department = department;
@@ -30,7 +30,10 @@ class Employee
 		{
 			if (field.Name == fieldName)
 			{
+				Console.WriteLine($"Updating the field {field.Name} from {field.GetValue(this)} to {value}!");
 				field.SetValue(this, value);
+
+				Console.WriteLine("Success!");
 				return true;
 			}
 		}
