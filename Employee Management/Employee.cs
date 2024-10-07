@@ -1,8 +1,16 @@
 ﻿using System;
 using System.Reflection;
+using System.Collections;
+using System.Collections.Generic;
 
-class Employee
+public class Employee
 {
+	public string FullName => lastName + " " + firstName + " " + surName;
+	public string BirthDate => birthDate.ToShortDateString();
+	public string Adress => address;
+	public string Department => department;
+	public string About => about;
+
 	string firstName, lastName, surName;
 	DateTime birthDate;
 	string address;
@@ -20,7 +28,36 @@ class Employee
 		this.about = about;
 	}
 
-	public void PrintName() => Console.WriteLine(firstName);
+
+	public bool GetData(string fieldName, out object data)
+	{
+		var fields = typeof(Employee).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+
+		foreach (var field in fields)
+		{
+			if (field.Name == fieldName)
+			{
+				data = field.GetValue(this);
+				Console.WriteLine($"Found field {field.Name} and retrieved {field.GetValue(this)}");
+				return true;
+			}
+		}
+
+		Console.WriteLine($"{fieldName} was not found");
+		data = null;
+		return false;
+	}
+
+
+	public IEnumerator<object> GetEnumerator()
+	{
+		var fields = typeof(Employee).GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+
+		foreach (var field in fields)
+		{
+			yield return field.GetValue(this);
+		}
+	}
 
 	public bool UpdateData(string fieldName, string value)
 	{

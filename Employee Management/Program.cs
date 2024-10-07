@@ -14,7 +14,12 @@ namespace Employee_Management
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
+			var form = new MainForm();
+
+			Employee bob = new Employee("Bob", "Pierson", "Specter", new DateTime(1996, 01, 15), "Pinkerton st. 1640", "Marketing", "Dammm");
+			form.InitializeTable(new Employee[] { bob });
+
+			Application.Run(form);
 		}
 	}
 

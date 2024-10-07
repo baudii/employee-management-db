@@ -11,7 +11,6 @@ namespace EmployeeDatabase
 		public MainForm()
 		{
 			InitializeComponent();
-			LoadSampleData(); // Загрузка тестовых данных
 		}
 
 		private void InitializeComponent()
@@ -62,7 +61,7 @@ namespace EmployeeDatabase
 			this.PerformLayout();
 		}
 
-		private void LoadSampleData()
+		public void InitializeTable(Employee[] employees)
 		{
 			// Добавляем колонки в DataGridView
 			dataGridView1.Columns.Add("fullName", "Полное имя");
@@ -71,11 +70,11 @@ namespace EmployeeDatabase
 			dataGridView1.Columns.Add("department", "Отдел");
 			dataGridView1.Columns.Add("about", "О сотруднике");
 
-			// Пример тестовых данных
-			dataGridView1.Rows.Add("Иван Иванов", DateTime.Now.AddYears(-30).ToShortDateString(), "Улица Ленина, дом 1", "Отдел продаж", "Менеджер");
-			dataGridView1.Rows.Add("Петр Петров", DateTime.Now.AddYears(-25).ToShortDateString(), "Улица Мира, дом 2", "Отдел маркетинга", "Аналитик");
+			foreach (Employee empl in employees)
+			{
+				dataGridView1.Rows.Add(empl.FullName, empl.BirthDate, empl.Adress, empl.Department, empl.About);
+			}
 
-			// Рассчитываем начальную ширину столбцов
 			AdjustColumnWidths();
 		}
 
