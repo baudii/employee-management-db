@@ -6,18 +6,18 @@ using System.Collections.Generic;
 public class Employee
 {
 	public string FullName => lastName + " " + firstName + " " + surName;
-	public string BirthDate => birthDate.ToShortDateString();
+	public string BirthDate => birthDate;
 	public string Adress => address;
 	public string Department => department;
 	public string About => about;
 
 	string firstName, lastName, surName;
-	DateTime birthDate;
+	string birthDate;
 	string address;
 	string department;
 	string about;
 
-	public Employee(string firstName = "", string lastName = "", string surName = "", DateTime birthDate = default, string address = "", string department = "", string about = "")
+	public Employee(string firstName = "_", string lastName = "_", string surName = "_", string birthDate = "Unknown", string address = "Unknown", string department = "Unknown", string about = "Unknown")
 	{
 		this.firstName = firstName;
 		this.lastName = lastName;
