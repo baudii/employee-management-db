@@ -2,10 +2,27 @@
 using System.Linq;
 using System.IO;
 using System.Data.SQLite;
+using System.Collections.Generic;
 
 public static class PersonnelDB
 {
-	static string db_path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..", "DB", "employees_data.db");
+	// Идентификаторы базы данных (можно подключить любую бд)
+
+	public const string DB_FILENAME = "employees_data.db";
+	public const string DB_NAME = "Employee_DB";
+	static string db_path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..", "DB", DB_FILENAME);
+
+	public static Dictionary<string, string> DB_Keys = new Dictionary<string, string>
+	{
+		{ "First_Name", "Имя" },
+		{ "Last_Name", "Фамилия" },
+		{ "Sur_Name", "Отчество" },
+		{ "Birth_Date", "Дата рождения" },
+		{ "Address", "Адрес" },
+		{ "Department", "Отдел" },
+		{ "About", "О сотруднике" }
+	};
+
 	public static Employee[] GetEmployees(int from, int amount)
 	{
 		// Проверка существования файла
@@ -24,9 +41,15 @@ public static class PersonnelDB
 			using (var connection = new SQLiteConnection(connectionString))
 			{
 				connection.Open();
+				string command = $"SELECT {DB_Keys.First()}";
 
+				foreach (var item in DB_Keys)
+				{
+					command += ", " + item.Key;
+				}
+
+				command += $" FROM {DB_NAME} WHERE ID BETWEEN {from} AND {from + amount}";
 				// Создание SQL-команды
-				string command = $"SELECT First_Name, Last_Name, Sur_Name, Birth_Date, Address, Department, About FROM Employee_DB WHERE ID BETWEEN {from} AND {from + amount};";
 
 				using (var cmd = new SQLiteCommand(command, connection))
 				{
@@ -36,13 +59,13 @@ public static class PersonnelDB
 						while (reader.Read() && i < amount)
 						{
 							employees[i] = new Employee(
-								reader.GetString(0), // firstName
-								reader.GetString(1), // lastName
-								reader.GetString(2), // surName
-								reader.GetString(3), // birthDate
-								reader.GetString(4), // adress
-								reader.GetString(5), // department
-								reader.GetString(6)  // about
+								reader.GetString(0), // First_Name
+								reader.GetString(1), // Last_Name
+								reader.GetString(2), // Sur_Name
+								reader.GetString(3), // Birth_Date
+								reader.GetString(4), // Adress
+								reader.GetString(5), // Department
+								reader.GetString(6)  // About
 							);
 							i++;
 						}
@@ -59,9 +82,6 @@ public static class PersonnelDB
 	}
 	public static bool EditData(int id, string field, string newValue)
 	{
-		// Путь к базе данных
-		string db_path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..", "DB", "employees_data.db");
-
 		// Проверка существования файла
 		if (!File.Exists(db_path))
 			return false;
@@ -77,12 +97,11 @@ public static class PersonnelDB
 				connection.Open();
 
 				// Проверка, что поле безопасно
-				string[] allowedFields = { "First_Name", "Last_Name", "Sur_Name", "Birth_Date", "Address", "Department", "About" };
-				if (!allowedFields.Contains(field))
+				if (!DB_Keys.ContainsKey(field))
 					throw new ArgumentException("Invalid field name");
 
 				// Создание SQL-команды с параметризованным запросом
-				string command = $"UPDATE Employee_DB SET {field} = @NewValue WHERE ID = @ID;";
+				string command = $"UPDATE {DB_NAME} SET {field} = @NewValue WHERE ID = @ID;";
 
 				using (var cmd = new SQLiteCommand(command, connection))
 				{
@@ -101,6 +120,4 @@ public static class PersonnelDB
 			throw new Exception($"Ошибка при подключении к базе данных: {ex.Message}");
 		}
 	}
-
-
 }
