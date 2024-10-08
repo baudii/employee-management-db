@@ -44,7 +44,7 @@ namespace EmployeeDatabase
 			this.dataGridView1.Size = new System.Drawing.Size(640, 300);  // Высота фиксированная
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom; // Изменяется только по ширине
-			this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellDoubleClick);
+			this.dataGridView1.CellDoubleClick += new DataGridViewCellEventHandler(this.DataGridView1_CellDoubleClick);
 			// 
 			// MainForm
 			// 
@@ -63,16 +63,19 @@ namespace EmployeeDatabase
 
 		public void InitializeTable(Employee[] employees)
 		{
+			// First_Name, Last_Name, Sur_Name, Birth_Date, Address, Department, About
 			// Добавляем колонки в DataGridView
-			dataGridView1.Columns.Add("fullName", "Полное имя");
-			dataGridView1.Columns.Add("birthDate", "Дата рождения");
-			dataGridView1.Columns.Add("address", "Адрес");
-			dataGridView1.Columns.Add("department", "Отдел");
-			dataGridView1.Columns.Add("about", "О сотруднике");
+			dataGridView1.Columns.Add("First_Name", "Полное имя");
+			dataGridView1.Columns.Add("Last_Name", "Полное имя");
+			dataGridView1.Columns.Add("Sur_Name", "Полное имя");
+			dataGridView1.Columns.Add("Birth_Date", "Дата рождения");
+			dataGridView1.Columns.Add("Address", "Адрес");
+			dataGridView1.Columns.Add("Department", "Отдел");
+			dataGridView1.Columns.Add("About", "О сотруднике");
 
 			foreach (Employee empl in employees)
 			{
-				dataGridView1.Rows.Add(empl.FullName, empl.BirthDate, empl.Adress, empl.Department, empl.About);
+				dataGridView1.Rows.Add(empl.FirstName, empl.LastName, empl.SurName, empl.BirthDate, empl.Address, empl.Department, empl.About);
 			}
 
 			AdjustColumnWidths();
@@ -112,15 +115,24 @@ namespace EmployeeDatabase
 
 		private void DataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
+			var item = sender as DataGridView;
 			if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
 			{
 				string currentValue = dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
+
+				string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
+
 				using (EditCellForm editForm = new EditCellForm(currentValue))
 				{
 					if (editForm.ShowDialog() == DialogResult.OK)
 					{
 						string newValue = editForm.UpdatedValue;
 						dataGridView1[e.ColumnIndex, e.RowIndex].Value = newValue; // Обновляем значение ячейки
+						if (PersonnelDB.EditData(e.RowIndex, columnName, newValue))
+						{
+							Console.WriteLine("Done");
+						}
+						
 					}
 				}
 			}

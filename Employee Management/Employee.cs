@@ -6,8 +6,11 @@ using System.Collections.Generic;
 public class Employee
 {
 	public string FullName => lastName + " " + firstName + " " + surName;
+	public string FirstName => firstName;
+	public string LastName => lastName;
+	public string SurName => surName;
 	public string BirthDate => birthDate;
-	public string Adress => address;
+	public string Address => address;
 	public string Department => department;
 	public string About => about;
 

@@ -15,9 +15,9 @@ namespace EmployeeDatabase
 
 		private void InitializeComponent()
 		{
-			this.textBoxValue = new System.Windows.Forms.TextBox();
-			this.buttonSave = new System.Windows.Forms.Button();
-			this.labelCurrentValue = new System.Windows.Forms.Label();
+			this.textBoxValue = new TextBox();
+			this.buttonSave = new Button();
+			this.labelCurrentValue = new Label();
 			this.SuspendLayout();
 			// 
 			// textBoxValue
@@ -35,7 +35,7 @@ namespace EmployeeDatabase
 			this.buttonSave.TabIndex = 1;
 			this.buttonSave.Text = "Сохранить";
 			this.buttonSave.UseVisualStyleBackColor = true;
-			this.buttonSave.Click += new System.EventHandler(this.ButtonSave_Click);
+			this.buttonSave.Click += new EventHandler(this.ButtonSave_Click);
 			// 
 			// labelCurrentValue
 			// 
@@ -49,7 +49,7 @@ namespace EmployeeDatabase
 			// EditCellForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(400, 100);
 			this.Controls.Add(this.labelCurrentValue);
 			this.Controls.Add(this.buttonSave);

@@ -16,7 +16,7 @@ namespace Employee_Management
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			var form = new MainForm();
-			Employee[] initialData = PersonnelDB.GetEmployees("./DB/employees_data.db", 0, 20);
+			Employee[] initialData = PersonnelDB.GetEmployees(0, 22);
 			form.InitializeTable(initialData);
 
 			Application.Run(form);
