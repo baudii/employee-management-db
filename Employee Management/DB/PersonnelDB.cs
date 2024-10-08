@@ -2,28 +2,13 @@
 using System.Linq;
 using System.IO;
 using System.Data.SQLite;
-using System.Collections.Generic;
 
 public static class PersonnelDB
 {
-	// Идентификаторы базы данных (можно подключить любую бд)
+	static string db_path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..", "DB", DB_Data_Static.DB_FILENAME);
 
-	public const string DB_FILENAME = "employees_data.db";
-	public const string DB_NAME = "Employee_DB";
-	static string db_path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..", "DB", DB_FILENAME);
 
-	public static Dictionary<string, string> DB_Keys = new Dictionary<string, string>
-	{
-		{ "First_Name", "Имя" },
-		{ "Last_Name", "Фамилия" },
-		{ "Sur_Name", "Отчество" },
-		{ "Birth_Date", "Дата рождения" },
-		{ "Address", "Адрес" },
-		{ "Department", "Отдел" },
-		{ "About", "О сотруднике" }
-	};
-
-	public static Employee[] GetEmployees(int from, int amount)
+	public static DB_Data[] Get_Data(int from, int amount) 
 	{
 		// Проверка существования файла
 		if (!File.Exists(db_path))
@@ -33,7 +18,7 @@ public static class PersonnelDB
 		string connectionString = $"Data Source={db_path};Version=3;";
 
 		// Создаем массив сотрудников
-		Employee[] employees = new Employee[amount];
+		DB_Data[] data = new DB_Data[amount];
 
 		try
 		{
@@ -41,14 +26,21 @@ public static class PersonnelDB
 			using (var connection = new SQLiteConnection(connectionString))
 			{
 				connection.Open();
-				string command = $"SELECT {DB_Keys.First()}";
-
-				foreach (var item in DB_Keys)
+				string command = $"SELECT {DB_Data_Static.DB_Keys.First()}";
+				int j = 0;
+				foreach (var item in DB_Data_Static.DB_Keys)
 				{
-					command += ", " + item.Key;
+					if (j == 0)
+					{
+						j++;
+						continue; // Поскольку первый элемент уже записан
+					}
+
+					command += ", " + item;
+					j++;
 				}
 
-				command += $" FROM {DB_NAME} WHERE ID BETWEEN {from} AND {from + amount}";
+				command += $" FROM {DB_Data_Static.DB_NAME} WHERE ID BETWEEN {from} AND {from + amount}";
 				// Создание SQL-команды
 
 				using (var cmd = new SQLiteCommand(command, connection))
@@ -58,15 +50,14 @@ public static class PersonnelDB
 						int i = 0;
 						while (reader.Read() && i < amount)
 						{
-							employees[i] = new Employee(
-								reader.GetString(0), // First_Name
-								reader.GetString(1), // Last_Name
-								reader.GetString(2), // Sur_Name
-								reader.GetString(3), // Birth_Date
-								reader.GetString(4), // Adress
-								reader.GetString(5), // Department
-								reader.GetString(6)  // About
-							);
+							data[i] = new EmployeeExample();
+							for (int k = 0; k < reader.FieldCount; k++)
+							{
+								var key = DB_Data_Static.DB_Keys.ElementAt(k);
+								var value = reader.GetString(k);
+								data[i].UpdateData(key, value);
+
+							}
 							i++;
 						}
 					}
@@ -78,7 +69,7 @@ public static class PersonnelDB
 			throw new Exception($"Ошибка при подключении к базе данных: {ex.Message}");
 		}
 
-		return employees;
+		return data;
 	}
 	public static bool EditData(int id, string field, string newValue)
 	{
@@ -97,11 +88,11 @@ public static class PersonnelDB
 				connection.Open();
 
 				// Проверка, что поле безопасно
-				if (!DB_Keys.ContainsKey(field))
+				if (!DB_Data_Static.DB_Keys.Contains(field))
 					throw new ArgumentException("Invalid field name");
 
 				// Создание SQL-команды с параметризованным запросом
-				string command = $"UPDATE {DB_NAME} SET {field} = @NewValue WHERE ID = @ID;";
+				string command = $"UPDATE {DB_Data_Static.DB_NAME} SET {field} = @NewValue WHERE ID = @ID;";
 
 				using (var cmd = new SQLiteCommand(command, connection))
 				{

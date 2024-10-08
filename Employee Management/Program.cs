@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using EmployeeDatabase;
 
 namespace Employee_Management
@@ -15,8 +16,23 @@ namespace Employee_Management
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
+			var db_Filename = "employees_data.db";
+			var db_Name = "Employee_DB";
+
 			var form = new MainForm();
-			Employee[] initialData = PersonnelDB.GetEmployees(0, 22);
+			var db_column_names = new List<string>
+			{
+				"Имя",
+				"Фамилия",
+				"Отчество",
+				"Дата рождения",
+				"Адрес",
+				"Отдел",
+				"О сотруднике"
+			};
+
+			DB_Data_Static.Initialize<EmployeeExample>(db_Filename, db_Name, db_column_names);
+			DB_Data[] initialData = PersonnelDB.Get_Data(0, 22);
 			form.InitializeTable(initialData);
 
 			Application.Run(form);

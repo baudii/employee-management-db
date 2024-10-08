@@ -61,18 +61,18 @@ namespace EmployeeDatabase
 			this.PerformLayout();
 		}
 
-		public void InitializeTable(Employee[] employees)
+		public void InitializeTable(DB_Data[] employees)
 		{
 			// Добавляем колонки в DataGridView
-			foreach (var element in PersonnelDB.DB_Keys)
+			for (int i = 0; i < DB_Data_Static.DB_Keys.Count; i++)
 			{
-				dataGridView1.Columns.Add(element.Key, element.Value);
+				dataGridView1.Columns.Add(DB_Data_Static.DB_Keys[i], DB_Data_Static.Db_Column_Names[i]);
 			}
 
 			// Добавляем строки (данные о сотрудниках)
-			foreach (Employee empl in employees)
+			foreach (EmployeeExample empl in employees)
 			{
-				dataGridView1.Rows.Add(empl.FirstName, empl.LastName, empl.SurName, empl.BirthDate, empl.Address, empl.Department, empl.About);
+				dataGridView1.Rows.Add(empl.First_Name, empl.Last_Name, empl.Sur_Name, empl.Birth_Date, empl.Address, empl.Department, empl.About);
 			}
 
 			AdjustColumnWidths();
